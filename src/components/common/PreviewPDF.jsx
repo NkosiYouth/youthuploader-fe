@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Document, Page, pdfjs } from "react-pdf";
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
-const BASE_URL= 'http://127.0.0.1:5000/api/uploads/'
+const BASE_URL= 'https://youthuploader-be.onrender.com/api/uploads/'
 
 export default function PreviewPDF({ link }) {
   const [numPages, setNumPages] = useState(null);
