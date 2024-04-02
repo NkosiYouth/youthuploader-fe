@@ -16,14 +16,18 @@ export default function ValidateProfiles() {
   const loadData = async () => {
     try {
       let result = await UserService.getAll({ isValidated: false });
-      setProfiles(result.data.users);
+      setProfiles(result.data.users || []); // Ensure profiles is always an array
     } catch (error) {
       console.log(error);
-      setLoading(false);
+      toast({
+        description: "Failed to load profiles",
+        status: "error",
+        isClosable: true,
+      });
     } finally {
       setLoading(false);
     }
-  };
+  };  
 
   const onSelectProfile = (profile) => {
     setIsEditing(true);
