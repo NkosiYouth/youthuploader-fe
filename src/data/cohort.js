@@ -2,6 +2,7 @@ const COHORT = [
     "Toyota 2",
     "Evercomm P2",
     "Toyota Y3 Top up October 2021",
+    "Toyota P6",
     "CSIR Program 3",
     "Abbott Rapid Diagnostics Y2",
     "ARRIS Y2",
