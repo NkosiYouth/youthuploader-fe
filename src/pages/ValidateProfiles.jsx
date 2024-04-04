@@ -12,11 +12,11 @@ export default function ValidateProfiles() {
   const [isEditing, setIsEditing] = useState(false);
   const [selectedProfile, setSelectedProfile] = useState(undefined);
 
-  
+
   const loadData = async () => {
     try {
       let result = await UserService.getAll({ isValidated: false });
-      setProfiles(result.data.users || []); // Ensure profiles is always an array
+      setProfiles(result.data || []); // Ensure profiles is always an array
     } catch (error) {
       console.log(error);
       toast({
@@ -27,7 +27,7 @@ export default function ValidateProfiles() {
     } finally {
       setLoading(false);
     }
-  };  
+  };
 
   const onSelectProfile = (profile) => {
     setIsEditing(true);
@@ -38,7 +38,7 @@ export default function ValidateProfiles() {
     setIsEditing(false);
     setSelectedProfile(undefined);
   }
-  
+
   const onUpdate = async (id, data) => {
     try{
       await UserService.updateById(id, Object.assign({}, data, {isValidated: true}));
@@ -51,6 +51,7 @@ export default function ValidateProfiles() {
         isClosable: true,
       });
     } catch(error){
+      console.log(error);
       toast({
         description: "Something went wrong!",
         status: "error",
@@ -58,7 +59,7 @@ export default function ValidateProfiles() {
       });
     }
   }
-  
+
   useEffect(() => {
     loadData();
   }, []);

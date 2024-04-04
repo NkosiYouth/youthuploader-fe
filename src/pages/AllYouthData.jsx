@@ -12,11 +12,11 @@ export default function AllYouthData() {
   const [isEditing, setIsEditing] = useState(false);
   const [selectedProfile, setSelectedProfile] = useState(undefined);
 
-  
+
   const loadData = async () => {
     try {
       let result = await UserService.getAll({ isValidated: true });
-      setProfiles(result.data.users);
+      setProfiles(result.data);
     } catch (error) {
       console.log(error);
       setLoading(false);
@@ -34,10 +34,12 @@ export default function AllYouthData() {
     setIsEditing(false);
     setSelectedProfile(undefined);
   }
-  
+
   const onUpdate = async (id, data) => {
     try{
-      await UserService.updateById(id, Object.assign({}, data, {isValidated: true}));
+      const updatedData = Object.assign({}, data, {isValidated: true});
+      console.log('㊙️ DATA:', updatedData);
+      await UserService.updateById(id, updatedData);
       setIsEditing(false);
       setLoading(true);
       loadData();
@@ -54,7 +56,7 @@ export default function AllYouthData() {
       });
     }
   }
-  
+
   useEffect(() => {
     loadData();
   }, []);
@@ -68,9 +70,9 @@ export default function AllYouthData() {
         <Flex justifyContent="center">
           <Spinner />
         </Flex>
-      ) : profiles.length > 0 ? (
+      ) : Array.isArray(profiles) && profiles.length > 0 ? (
         <Stack>
-          {profiles && profiles.map((item, i) => {
+          {profiles.map((item, i) => {
             return <ProfileItem key={i} item={item} isValidated onSelectProfile={onSelectProfile} />;
           })}
         </Stack>
