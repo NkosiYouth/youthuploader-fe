@@ -16,7 +16,7 @@ export default function ProfileItem({ item, isValidated = false, onSelectProfile
         borderLeftWidth={4}
         borderColor={isValidated ? "green" : "red"}
       >
-        {item.first_name} {item.last_name} - {item._id}
+        {item.first_name} {item.last_name} - {item.rsa_id_number}
       </Text>
       <Button
         size="sm"

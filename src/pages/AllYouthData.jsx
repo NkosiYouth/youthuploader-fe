@@ -37,7 +37,9 @@ export default function AllYouthData() {
 
   const onUpdate = async (id, data) => {
     try{
-      await UserService.updateById(id, Object.assign({}, data, {isValidated: true}));
+      const updatedData = Object.assign({}, data, {isValidated: true});
+      console.log('㊙️ DATA:', updatedData);
+      await UserService.updateById(id, updatedData);
       setIsEditing(false);
       setLoading(true);
       loadData();

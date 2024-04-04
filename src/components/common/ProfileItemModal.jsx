@@ -64,7 +64,7 @@ export default function ProfileItemModal({
     try {
       // await schema.validate(values, { abortEarly: false });
       console.log(values);
-      const {_id, files, valuesToUpdate} = values;
+      const {_id, files, ...valuesToUpdate} = values;
       onSave && onSave(data._id, valuesToUpdate);
     } catch (error) {
       toast({

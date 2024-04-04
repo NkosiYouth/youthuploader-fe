@@ -1,9 +1,9 @@
 import axios from '../utils/axios';
 
 export default class UserService{
-    static getAll(params){
+    static getAll(params = {}){
         return axios.get('users', {
-            params: params ?? {}
+            params: params
         });
     }
     static getById(id){
