@@ -1,4 +1,4 @@
-const COHORT = [
+export const COHORT = [
     "Toyota 2",
     "Evercomm P2",
     "Toyota Y3 Top up October 2021",

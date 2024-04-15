@@ -1,22 +1,45 @@
-import { Flex, Spinner, Stack, Text, useToast } from "@chakra-ui/react";
+import { Flex, Spinner, Stack, Text, Input, Select, useToast } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import { ProfileItem } from "../components";
 import UserService from '../services/UserService';
 import ProfileItemModal from "../components/common/ProfileItemModal";
 
+// Import the cohorts array from cohort.js
+import { COHORT } from "../data/cohort";
+
 export default function ValidateProfiles() {
   const toast = useToast();
   const [profiles, setProfiles] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [filter, setFilter] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
 
   const [isEditing, setIsEditing] = useState(false);
   const [selectedProfile, setSelectedProfile] = useState(undefined);
 
-
   const loadData = async () => {
     try {
+      // Fetch profiles based on isValidated only
       let result = await UserService.getAll({ isValidated: false });
-      setProfiles(result.data || []); // Ensure profiles is always an array
+      let filteredProfiles = result.data || [];
+  
+      // Apply additional filters for cohort and searchQuery
+      filteredProfiles = filteredProfiles.filter(profile => {
+        // Check if cohort matches if filter is applied
+        if (filter && profile.cohort !== filter) {
+          return false; // Skip this profile if cohort doesn't match the filter
+        }
+  
+        // Check if any of the fields contain the search query
+        const searchTerms = searchQuery.toLowerCase().trim().split(" ");
+        return searchTerms.every(term =>
+          profile.cohort.toLowerCase().includes(term) ||
+          profile.first_name.toLowerCase().includes(term) ||
+          profile.last_name.toLowerCase().includes(term)
+        );
+      });
+
+      setProfiles(filteredProfiles);
     } catch (error) {
       console.log(error);
       toast({
@@ -40,7 +63,7 @@ export default function ValidateProfiles() {
   }
 
   const onUpdate = async (id, data) => {
-    try{
+    try {
       await UserService.updateById(id, Object.assign({}, data, {isValidated: true}));
       setIsEditing(false);
       setLoading(true);
@@ -50,7 +73,7 @@ export default function ValidateProfiles() {
         status: "success",
         isClosable: true,
       });
-    } catch(error){
+    } catch(error) {
       console.log(error);
       toast({
         description: "Something went wrong!",
@@ -62,22 +85,38 @@ export default function ValidateProfiles() {
 
   useEffect(() => {
     loadData();
-  }, []);
+  }, [filter, searchQuery]);
 
   return (
     <Stack gap={6}>
-      <Text fontSize="xl" fontWeight="semibold">
-        All Validated Profiles
-      </Text>
+      <Flex justifyContent="space-between">
+        <Text fontSize="xl" fontWeight="semibold">
+          All Validated Profiles
+        </Text>
+        <Flex>
+          {/* Render dropdown options dynamically from the cohort data */}
+          <Select value={filter} onChange={(e) => setFilter(e.target.value)}>
+            <option value="">All Cohorts</option>
+            {COHORT.map((cohort, index) => (
+              <option key={index} value={cohort}>{cohort}</option>
+            ))}
+          </Select>
+          <Input
+            placeholder="Search by name or cohort"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+        </Flex>
+      </Flex>
       {loading ? (
         <Flex justifyContent="center">
           <Spinner />
         </Flex>
       ) : profiles.length > 0 ? (
         <Stack>
-          {profiles && profiles.map((item, i) => {
-            return <ProfileItem key={i} item={item} onSelectProfile={onSelectProfile} />;
-          })}
+          {profiles.map((item, i) => (
+            <ProfileItem key={i} item={item} onSelectProfile={onSelectProfile} />
+          ))}
         </Stack>
       ) : (
         <Text textAlign="center" color="gray">
@@ -85,14 +124,15 @@ export default function ValidateProfiles() {
         </Text>
       )}
 
-      {isEditing && <ProfileItemModal
-        data={selectedProfile}
-        isOpen={isEditing}
-        onClose={onStopEditing}
-        onSave={onUpdate}
-        isValidated={false}
-      />}
-
+      {isEditing && (
+        <ProfileItemModal
+          data={selectedProfile}
+          isOpen={isEditing}
+          onClose={onStopEditing}
+          onSave={onUpdate}
+          isValidated={false}
+        />
+      )}
     </Stack>
   );
 }
