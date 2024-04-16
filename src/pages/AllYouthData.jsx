@@ -100,6 +100,7 @@ export default function AllYouthData() {
             placeholder="Search by name or cohort"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
+            marginLeft="30px"
           />
         </Flex>
       </Flex>

@@ -49,6 +49,15 @@ const schemaKeys = [
   // "isValidated"
 ];
 
+const dropdownOptions = {
+  title: ["Mr", "Ms", "Mrs", "Miss", "Dr"],
+  gender: ["Male", "Female", "Other"],
+  disabled: ["True", "False"],
+  race: ["Asian", "Black", "Indian", "White", "Other"],
+  bank_account_type: ["Savings", "Cheque", "Credit Card"],
+  bank_branch_code: ["632005", "250655", "051001", "198765", "470010", "678910", "679000", "430000"],
+};
+
 function capitalizeFirstLetter(string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
 }
@@ -113,17 +122,32 @@ export default function ProfileItemModal({
                 <Stack height="90vh" overflowY="auto" pe={4}>
                   {schemaKeys.map((key) => {
                     if(key === 'isValidated') return null;
-                    return <CInput
-                      key={key}
-                      type={key === 'start_date' || key === 'end_date' ? 'date' : 'text'}
-                      label={capitalizeFirstLetter(key.replace(/_/g, " "))}
-                      placeholder={capitalizeFirstLetter(key.replace(/_/g, " "))}
-                      name={key}
-                      value={formik.values[key]}
-                      onChange={formik.handleChange}
-                      touched={formik.touched[key]}
-                      errors={formik.errors[key]}
-                    />
+                    if (dropdownOptions.hasOwnProperty(key)) {
+                      return (
+                        <CSelect
+                          key={key}
+                          label={capitalizeFirstLetter(key.replace(/_/g, " "))}
+                          name={key}
+                          value={formik.values[key]}
+                          onChange={(selectedOption) => formik.setFieldValue(key, selectedOption)}
+                          options={dropdownOptions[key].map(option => ({ value: option, label: option }))}
+                        />
+                      );
+                    } else {
+                      return (
+                        <CInput
+                          key={key}
+                          type={key === 'start_date' || key === 'end_date' ? 'date' : 'text'}
+                          label={capitalizeFirstLetter(key.replace(/_/g, " "))}
+                          placeholder={capitalizeFirstLetter(key.replace(/_/g, " "))}
+                          name={key}
+                          value={formik.values[key]}
+                          onChange={formik.handleChange}
+                          touched={formik.touched[key]}
+                          errors={formik.errors[key]}
+                        />
+                      );
+                    }
                   })}
                   {!isValidated ? (
                     <Button
