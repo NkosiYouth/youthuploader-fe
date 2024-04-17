@@ -75,10 +75,11 @@ export default function ProfileItemModal({
   const onHandleSubmit = async (values) => {
     setIsSubmitting(true);
     try {
-      // await schema.validate(values, { abortEarly: false });
-      console.log(values);
-      const {_id, files, ...valuesToUpdate} = values;
-      onSave && onSave(data._id, valuesToUpdate);
+      // Convert "Yes" or "No" to true or false for MongoDB
+      const valuesToUpdate = { ...values, disabled: values.disabled === "Yes" ? true : false };
+      console.log(valuesToUpdate);
+      const { _id, files, ...valuesToSave } = valuesToUpdate;
+      onSave && onSave(data._id, valuesToSave);
     } catch (error) {
       toast({
         title: "Validation Error",
