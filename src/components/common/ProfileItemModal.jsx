@@ -53,7 +53,7 @@ const dropdownOptions = {
   title: ["Mr", "Ms", "Mrs", "Miss", "Dr"],
   gender: ["Male", "Female", "Other"],
   disabled: ["Yes", "No"],
-  race: ["Asian", "African", "Indian", "White", "Other"],
+  race: ["Asian", "African", "Indian", "White", "Coloured", "Other"],
   bank_account_type: ["Savings", "Cheque", "Credit Card"],
   bank_branch_code: ["632005", "250655", "051001", "198765", "470010", "678910", "679000", "430000"],
 };
