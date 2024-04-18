@@ -82,52 +82,56 @@ export default function AllYouthData() {
 
   return (
     <Stack gap={6}>
-      <Flex justifyContent="space-between">
-        <Text fontSize="xl" fontWeight="semibold">
-          All Validated Profiles
-        </Text>
-        <Flex>
-          {/* Add Select dropdown for filtering */}
-          <Select value={filter} onChange={(e) => setFilter(e.target.value)}>
-            <option value="">All Cohorts</option>
-            {/* Render dropdown options dynamically from the cohort data */}
-            {COHORT.map((cohort, index) => (
-              <option key={index} value={cohort}>{cohort}</option>
-            ))}
-          </Select>
-          {/* Add input field for searching */}
-          <Input
-            placeholder="Search by name or cohort"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            marginLeft="30px"
-          />
-        </Flex>
+  <Flex justifyContent="space-between" alignItems="center">
+    <Text fontSize="xl" fontWeight="semibold">
+      All Validated Profiles
+    </Text>
+    <Flex>
+      {/* Add Select dropdown for filtering */}
+      <Select value={filter} onChange={(e) => setFilter(e.target.value)}>
+        <option value="">All Cohorts</option>
+        {/* Render dropdown options dynamically from the cohort data */}
+        {COHORT.map((cohort, index) => (
+          <option key={index} value={cohort}>{cohort}</option>
+        ))}
+      </Select>
+      {/* Add input field for searching */}
+      <Input
+        placeholder="Search by name or cohort"
+        value={searchQuery}
+        onChange={(e) => setSearchQuery(e.target.value)}
+        marginLeft="30px"
+      />
+    </Flex>
+  </Flex>
+  <Stack spacing={4}>
+    <Text fontSize="md" color="gray">
+      {`Showing ${profiles.length} Validated Profiles`}
+    </Text>
+    {loading ? (
+      <Flex justifyContent="center">
+        <Spinner />
       </Flex>
-      {loading ? (
-        <Flex justifyContent="center">
-          <Spinner />
-        </Flex>
-      ) : Array.isArray(profiles) && profiles.length > 0 ? (
-        <Stack>
-          {profiles.map((item, i) => {
-            return <ProfileItem key={i} item={item} isValidated onSelectProfile={onSelectProfile} />;
-          })}
-        </Stack>
-      ) : (
-        <Text textAlign="center" color="gray">
-          No Profiles
-        </Text>
-      )}
+    ) : Array.isArray(profiles) && profiles.length > 0 ? (
+      profiles.map((item, i) => (
+        <ProfileItem key={i} item={item} isValidated onSelectProfile={onSelectProfile} />
+      ))
+    ) : (
+      <Text textAlign="center" color="gray">
+        No Profiles
+      </Text>
+    )}
+  </Stack>
+  {isEditing && (
+    <ProfileItemModal
+      data={selectedProfile}
+      isOpen={isEditing}
+      onClose={onStopEditing}
+      onSave={onUpdate}
+      isValidated={true}
+    />
+  )}
+</Stack>
 
-      {isEditing && <ProfileItemModal
-        data={selectedProfile}
-        isOpen={isEditing}
-        onClose={onStopEditing}
-        onSave={onUpdate}
-        isValidated={true}
-      />}
-
-    </Stack>
   );
 }
