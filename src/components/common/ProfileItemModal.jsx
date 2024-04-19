@@ -1,6 +1,7 @@
 import {
   Box,
   Button,
+  Flex,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -11,7 +12,7 @@ import {
   Text,
   useToast,
 } from "@chakra-ui/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import PreviewPDF from "./PreviewPDF";
 import { useFormik } from "formik";
 import { CInput, CSelect } from "./inputs";
@@ -19,6 +20,12 @@ import { profileSchema } from "../../utils/schema";
 import { cohort_options } from "../../data/cohort";
 import { supervisor_name_options } from "../../data/supervisor";
 import { host_site_options } from "../../data/host_site";
+import AddSupervisorModal from "../supervisor/AddSupervisorModal";
+import AddHostModal from '../host/AddHostModal';
+import SupervisorService from "../../services/SupervisorService";
+import HostService from "../../services/HostService";
+import HostAddressService from "../../services/HostAddressService";
+import AddHostAddressModal from "../host/AddHostAddressModal";
 
 const schemaKeys = [
   "cohort",
@@ -43,9 +50,9 @@ const schemaKeys = [
   "monthly_salary",
   "start_date",
   "end_date",
-  "supervisor_name",
-  "host_name",
-  "host_site",
+  "supervisor",
+  "host",
+  "host_address",
   // "isValidated"
 ];
 
@@ -56,6 +63,9 @@ const dropdownOptions = {
   race: ["Asian", "African", "Indian", "White", "Coloured", "Other"],
   bank_account_type: ["Savings", "Cheque", "Credit Card"],
   bank_branch_code: ["632005", "250655", "051001", "198765", "470010", "678910", "679000", "430000"],
+  supervisor: [],
+  host: [],
+  host_address: []
 };
 
 function capitalizeFirstLetter(string) {
@@ -72,6 +82,12 @@ export default function ProfileItemModal({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const toast = useToast();
 
+  const [isUpdated, setIsUpdated] = useState(false);
+  const [supervisoOptions, setSupervisorOptions] = useState([]);
+  const [hostOptions, setHostOptions] = useState([]);
+  const [hostAddresses, setHostAddresses] = useState([]);
+  const [hostAddressOptions, setHostAddressOptions] = useState([]);
+
   const onHandleSubmit = async (values) => {
     setIsSubmitting(true);
     try {
@@ -79,7 +95,13 @@ export default function ProfileItemModal({
       const valuesToUpdate = { ...values, disabled: values.disabled === "Yes" ? true : false };
       console.log(valuesToUpdate);
       const { _id, files, ...valuesToSave } = valuesToUpdate;
-      onSave && onSave(data._id, valuesToSave);
+      //Check if the data is validated
+      let dataIsValidated = isValidated;
+      let isUpdatedAndVerified = false;
+      if(isValidated){
+
+      }
+      onSave && onSave(data._id, valuesToSave, dataIsValidated, isUpdatedAndVerified);
     } catch (error) {
       toast({
         title: "Validation Error",
@@ -102,6 +124,50 @@ export default function ProfileItemModal({
     onSubmit: onHandleSubmit,
   });
 
+
+  const fetchSupervisors = async () => {
+    try{
+      let data = await SupervisorService.getAll();
+      data = data.data;
+      console.log('㊙️ DATA:', data);
+      let options = data.map((item) => ({label: `${item.first_name} ${item.last_name}`, value: item._id}))
+      setSupervisorOptions(options);
+    } catch(error){
+      console.log(error);
+    }
+  }
+
+  const fetchHosts = async () => {
+    try{
+      let data = await HostService.getAll();
+      data = data.data;
+      console.log('㊙️ DATA:', data);
+      let options = data.map((item) => ({label: item.host_name, value: item._id}))
+      setHostOptions(options);
+    } catch(error){
+      console.log(error);
+    }
+  }
+
+  const fetchHostAddresses = async () => {
+    try{
+      let data = await HostAddressService.getAll();
+      data = data.data;
+      console.log('㊙️ DATA:', data);
+      let options = data.map((item) => ({label: item.host_address, value: item._id}));
+      setHostAddresses(options);
+      setHostAddressOptions(options);
+    } catch(error){
+      console.log(error);
+    }
+  }
+
+  useEffect(() => {
+    fetchSupervisors();
+    fetchHosts();
+    fetchHostAddresses();
+  }, []);
+
   return (
     <Modal
       isOpen={isOpen}
@@ -122,17 +188,28 @@ export default function ProfileItemModal({
               <form onSubmit={formik.handleSubmit}>
                 <Stack height="90vh" overflowY="auto" pe={4}>
                   {schemaKeys.map((key) => {
-                    if(key === 'isValidated') return null;
+                    if (key === 'isValidated') return null;
+                    let options;
+                    if(key === 'supervisor') options = supervisoOptions;
+                    else if(key === 'host') options = hostOptions;
+                    else if(key === 'host_address') options = hostAddressOptions;
+                    else options = dropdownOptions[key]?.map(option => ({ value: option, label: option })) || [];
+
                     if (dropdownOptions.hasOwnProperty(key)) {
                       return (
-                        <CSelect
+                        <>
+                        {key === 'supervisor' && <AddSupervisorModal loadData={fetchSupervisors}/>}
+                        {key === 'host' && <AddHostModal loadData={fetchHosts}/>}
+                        {key === 'host_address' && <AddHostAddressModal hostOptions={hostOptions} loadData={fetchHostAddresses}/>}
+                          <CSelect
                           key={key}
                           label={capitalizeFirstLetter(key.replace(/_/g, " "))}
                           name={key}
                           value={formik.values[key]}
                           onChange={(selectedOption) => formik.setFieldValue(key, selectedOption)}
-                          options={dropdownOptions[key].map(option => ({ value: option, label: option }))}
+                          options={options}
                         />
+                        </>
                       );
                     } else {
                       return (
@@ -151,18 +228,37 @@ export default function ProfileItemModal({
                     }
                   })}
                   {!isValidated ? (
-                    <Button
-                      type="submit"
-                      colorScheme="green"
-                      p={6}
-                      border={0}
-                      rounded="xl"
-                      _focus={{ outline: 0 }}
-                      isLoading={isSubmitting}
-                      loadingText="Validating..."
-                    >
-                      Confirm & Verify
-                    </Button>
+                    <Flex justifyContent={'space-between'} gap={2}>
+                      <Button
+                        type="submit"
+                        colorScheme="green"
+                        backgroundColor={'#C98E58'}
+                        onClick={() => setIsUpdated(true)}
+                        color={'#fff'}
+                        p={6}
+                        border={0}
+                        rounded="xl"
+                        _focus={{ outline: 0 }}
+                        isLoading={isSubmitting}
+                        loadingText="Validating..."
+                        width={'100%'}
+                      >
+                        Save Updates
+                      </Button>
+                      <Button
+                        type="submit"
+                        colorScheme="green"
+                        p={6}
+                        border={0}
+                        rounded="xl"
+                        _focus={{ outline: 0 }}
+                        isLoading={isSubmitting}
+                        loadingText="Validating..."
+                        width={'100%'}
+                      >
+                        Confirm & Verify
+                      </Button>
+                    </Flex>
                   ) : (
                     <Button
                       type="submit"

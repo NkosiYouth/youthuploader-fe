@@ -9,7 +9,7 @@ export default function ProfileItem({ item, isValidated = false, onSelectProfile
       py={3}
       px={4}
       rounded="xl"
-      bgColor={isValidated ? "green.50" : "red.50"}
+      bgColor={isValidated ? "green.50" : item.isUpdated ? '#C98E58' : "red.50"}
     >
       <Text
         ps={2}
@@ -21,6 +21,7 @@ export default function ProfileItem({ item, isValidated = false, onSelectProfile
       <Button
         size="sm"
         colorScheme={isValidated ? "green" : "red"}
+        backgroundColor={item.isUpdated ? '#C98E58' : ''}
         rounded="full"
         border={0}
         _focus={{ outline: 0 }}

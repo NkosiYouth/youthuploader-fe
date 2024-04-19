@@ -22,14 +22,14 @@ export default function ValidateProfiles() {
       // Fetch profiles based on isValidated only
       let result = await UserService.getAll({ isValidated: false });
       let filteredProfiles = result.data || [];
-  
+
       // Apply additional filters for cohort and searchQuery
       filteredProfiles = filteredProfiles.filter(profile => {
         // Check if cohort matches if filter is applied
         if (filter && profile.cohort !== filter) {
           return false; // Skip this profile if cohort doesn't match the filter
         }
-  
+
         // Check if any of the fields contain the search query
         const searchTerms = searchQuery.toLowerCase().trim().split(" ");
         return searchTerms.every(term =>
@@ -62,9 +62,13 @@ export default function ValidateProfiles() {
     setSelectedProfile(undefined);
   }
 
-  const onUpdate = async (id, data) => {
+  const onUpdate = async (id, data, isValidated, isUpdated) => {
     try {
-      await UserService.updateById(id, Object.assign({}, data, {isValidated: true}));
+      let flags = {
+        isValidated,
+        isUpdated
+      };
+      await UserService.updateById(id, Object.assign({}, data, flags));
       setIsEditing(false);
       setLoading(true);
       loadData();
