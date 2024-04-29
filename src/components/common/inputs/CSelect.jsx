@@ -1,8 +1,8 @@
-import { FormLabel, Stack, FormErrorMessage } from '@chakra-ui/react';
+import { FormLabel, Stack, FormErrorMessage, HStack, Flex } from '@chakra-ui/react';
 import React from 'react';
 import Select from 'react-select';
 
-export default function CSelect({ touched, errors, label, name, options=[], placeholder, value, onChange }) {
+export default function CSelect({ touched, errors, label, name, options=[], placeholder, value, onChange, afterLabel }) {
     const handleCohortChange = (selectedOption) => {
         if (selectedOption) {
             onChange(selectedOption.value);
@@ -18,7 +18,12 @@ export default function CSelect({ touched, errors, label, name, options=[], plac
 
     return (
         <Stack>
-            <FormLabel>{label}</FormLabel>
+            <Flex justifyContent={'space-between'}>
+                <FormLabel>{label}</FormLabel>
+                <HStack>
+                    {afterLabel && afterLabel}
+                </HStack>
+            </Flex>
             <Select options={options} value={getValue()} onChange={handleCohortChange} placeholder={placeholder} />
             {errors && touched && <FormErrorMessage>{errors}</FormErrorMessage>}
         </Stack>

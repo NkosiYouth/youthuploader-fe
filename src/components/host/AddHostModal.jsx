@@ -60,7 +60,7 @@ export default function AddHostModal({ loadData }) {
   return (
     <>
       <Flex justifyContent={'flex-end'}>
-        <Button onClick={onShowModal} size='sm' colorScheme='green'>Add Host</Button>
+        <Button onClick={onShowModal} size='xs' colorScheme='green' bgColor={'#7f8c8d'}>Add Host</Button>
       </Flex>
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />

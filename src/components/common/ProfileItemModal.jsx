@@ -89,6 +89,8 @@ export default function ProfileItemModal({
   const [hostAddressOptions, setHostAddressOptions] = useState([]);
 
   const onHandleSubmit = async (values) => {
+    console.log(values);
+    return;
     setIsSubmitting(true);
     try {
       // Convert "Yes" or "No" to true or false for MongoDB
@@ -98,7 +100,7 @@ export default function ProfileItemModal({
       //Check if the data is validated
       let dataIsValidated = isValidated;
       let isUpdatedAndVerified = false;
-      if(isValidated){
+      if (isValidated) {
 
       }
       onSave && onSave(data._id, valuesToSave, dataIsValidated, isUpdatedAndVerified);
@@ -126,38 +128,38 @@ export default function ProfileItemModal({
 
 
   const fetchSupervisors = async () => {
-    try{
+    try {
       let data = await SupervisorService.getAll();
       data = data.data;
       console.log('㊙️ DATA:', data);
-      let options = data.map((item) => ({label: `${item.first_name} ${item.last_name}`, value: item._id}))
+      let options = data.map((item) => ({ label: `${item.first_name} ${item.last_name}`, value: item._id }))
       setSupervisorOptions(options);
-    } catch(error){
+    } catch (error) {
       console.log(error);
     }
   }
 
   const fetchHosts = async () => {
-    try{
+    try {
       let data = await HostService.getAll();
       data = data.data;
       console.log('㊙️ DATA:', data);
-      let options = data.map((item) => ({label: item.host_name, value: item._id}))
+      let options = data.map((item) => ({ label: item.host_name, value: item._id }))
       setHostOptions(options);
-    } catch(error){
+    } catch (error) {
       console.log(error);
     }
   }
 
   const fetchHostAddresses = async () => {
-    try{
+    try {
       let data = await HostAddressService.getAll();
       data = data.data;
       console.log('㊙️ DATA:', data);
-      let options = data.map((item) => ({label: item.host_address, value: item._id}));
+      let options = data.map((item) => ({ label: item.host_address, value: item._id }));
       setHostAddresses(options);
       setHostAddressOptions(options);
-    } catch(error){
+    } catch (error) {
       console.log(error);
     }
   }
@@ -190,25 +192,32 @@ export default function ProfileItemModal({
                   {schemaKeys.map((key) => {
                     if (key === 'isValidated') return null;
                     let options;
-                    if(key === 'supervisor') options = supervisoOptions;
-                    else if(key === 'host') options = hostOptions;
-                    else if(key === 'host_address') options = hostAddressOptions;
+                    if (key === 'supervisor') options = supervisoOptions;
+                    else if (key === 'host') options = hostOptions;
+                    else if (key === 'host_address') options = hostAddressOptions;
                     else options = dropdownOptions[key]?.map(option => ({ value: option, label: option })) || [];
 
                     if (dropdownOptions.hasOwnProperty(key)) {
                       return (
                         <>
-                        {key === 'supervisor' && <AddSupervisorModal loadData={fetchSupervisors}/>}
-                        {key === 'host' && <AddHostModal loadData={fetchHosts}/>}
-                        {key === 'host_address' && <AddHostAddressModal hostOptions={hostOptions} loadData={fetchHostAddresses}/>}
+
                           <CSelect
-                          key={key}
-                          label={capitalizeFirstLetter(key.replace(/_/g, " "))}
-                          name={key}
-                          value={formik.values[key]}
-                          onChange={(selectedOption) => formik.setFieldValue(key, selectedOption)}
-                          options={options}
-                        />
+                            key={key}
+                            label={capitalizeFirstLetter(key.replace(/_/g, " "))}
+                            name={key}
+                            value={formik.values[key]}
+                            onChange={(selectedOption) => formik.setFieldValue(key, selectedOption)}
+                            options={options}
+                            touched={formik.touched[key]}
+                            errors={formik.errors[key]}
+                            afterLabel={
+                              <>
+                                {key === 'supervisor' && <AddSupervisorModal loadData={fetchSupervisors} />}
+                                {key === 'host' && <AddHostModal loadData={fetchHosts} />}
+                                {key === 'host_address' && <AddHostAddressModal hostOptions={hostOptions} loadData={fetchHostAddresses} />}
+                              </>
+                            }
+                          />
                         </>
                       );
                     } else {
@@ -284,7 +293,7 @@ export default function ProfileItemModal({
                 {data && data.files && data.files.map((item, i) => (
                   <Box key={i}>
                     <Box borderBottomWidth={1}>
-                      <PreviewPDF link={item} />
+                      {/* <PreviewPDF link={item} /> */}
                     </Box>
                   </Box>
                 ))}

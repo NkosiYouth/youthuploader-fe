@@ -66,7 +66,7 @@ export default function AddSupervisorModal({ loadData }) {
   return (
     <>
       <Flex justifyContent={'flex-end'}>
-        <Button onClick={onShowModal} size='sm' colorScheme='green'>Add Supervisor</Button>
+        <Button onClick={onShowModal} size='xs' colorScheme='green' bgColor={'#7f8c8d'}>Add Supervisor</Button>
       </Flex>
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
