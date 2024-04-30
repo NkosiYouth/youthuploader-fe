@@ -1,38 +1,22 @@
-import { useState } from "react";
-import { Document, Page, pdfjs } from "react-pdf";
-pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
-import 'react-pdf/dist/Page/TextLayer.css';
+import React from 'react';
+import { Viewer, Worker, Toolbar, PageNavigation } from '@react-pdf-viewer/core';
+import { defaultLayoutPlugin } from '@react-pdf-viewer/default-layout';
+// Import styles
+import '@react-pdf-viewer/default-layout/lib/styles/index.css';
 
-const BASE_URL= 'https://youthatwork.s3.eu-north-1.amazonaws.com/'
+const PreviewPDF = ({ link }) => {
+  // const pdfLink = `https://youthatwork.s3.eu-north-1.amazonaws.com/${link}`;
+  const pdfLink = `sample.pdf`;
 
-export default function PreviewPDF({ link }) {
-  const [numPages, setNumPages] = useState(null);
-  const [pageNumber, setPageNumber] = useState(0);
-
-  console.log(link);
-
-  const onDocumentLoadSuccess = ({ numPages }) => {
-    setNumPages(numPages);
-  };
-
-  const pageStyles = {
-    display: 'block',
-    margin: '0 auto',
-    marginBottom: '10px' // Adjust this value to reduce the space between pages
-  };
+  const defaultLayoutPluginInstance = defaultLayoutPlugin();
 
   return (
-    <Document file={`${BASE_URL}${link}`} onLoadSuccess={onDocumentLoadSuccess}>
-      {Array.from(
-        new Array(numPages),
-        (el, index) => (
-          <Page
-            key={`page_${index + 1}`}
-            pageNumber={index + 1}
-            style={pageStyles}
-          />
-        ),
-      )}
-    </Document>
+    <div style={{ height: '100%' }}>
+      <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.min.js">
+        <Viewer fileUrl={pdfLink} plugins={[defaultLayoutPluginInstance]} />
+      </Worker>
+    </div>
   );
-}
+};
+
+export default PreviewPDF;

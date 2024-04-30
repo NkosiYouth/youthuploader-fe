@@ -189,7 +189,7 @@ export default function ProfileItemModal({
               </Text>
               <form onSubmit={formik.handleSubmit}>
                 <Stack height="90vh" overflowY="auto" pe={4}>
-                  {schemaKeys.map((key) => {
+                  {schemaKeys.map((key, index) => {
                     if (key === 'isValidated') return null;
                     let options;
                     if (key === 'supervisor') options = supervisoOptions;
@@ -200,9 +200,8 @@ export default function ProfileItemModal({
                     if (dropdownOptions.hasOwnProperty(key)) {
                       return (
                         <>
-
                           <CSelect
-                            key={key}
+                            key={index}
                             label={capitalizeFirstLetter(key.replace(/_/g, " "))}
                             name={key}
                             value={formik.values[key]}
@@ -223,7 +222,7 @@ export default function ProfileItemModal({
                     } else {
                       return (
                         <CInput
-                          key={key}
+                          key={index}
                           type={key === 'start_date' || key === 'end_date' ? 'date' : 'text'}
                           label={capitalizeFirstLetter(key.replace(/_/g, " "))}
                           placeholder={capitalizeFirstLetter(key.replace(/_/g, " "))}
@@ -293,7 +292,7 @@ export default function ProfileItemModal({
                 {data && data.files && data.files.map((item, i) => (
                   <Box key={i}>
                     <Box borderBottomWidth={1}>
-                      {/* <PreviewPDF link={item} /> */}
+                      <PreviewPDF link={item} />
                     </Box>
                   </Box>
                 ))}
