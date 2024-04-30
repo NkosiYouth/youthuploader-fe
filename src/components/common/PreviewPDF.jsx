@@ -5,8 +5,8 @@ import { defaultLayoutPlugin } from '@react-pdf-viewer/default-layout';
 import '@react-pdf-viewer/default-layout/lib/styles/index.css';
 
 const PreviewPDF = ({ link }) => {
-  // const pdfLink = `https://youthatwork.s3.eu-north-1.amazonaws.com/${link}`;
-  const pdfLink = `sample.pdf`;
+  const pdfLink = `https://youthatwork.s3.eu-north-1.amazonaws.com/${link}`;
+  // const pdfLink = `sample.pdf`;
 
   const defaultLayoutPluginInstance = defaultLayoutPlugin();
 
