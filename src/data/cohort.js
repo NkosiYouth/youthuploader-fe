@@ -3,6 +3,7 @@ export const COHORT = [
     "Evercomm P2",
     "Toyota Y3 Top up October 2021",
     "Toyota P6",
+    "Anglo American Platinum P3",
     "Mercedes Benz P4",
     "CSIR Program 3",
     "Abbott Rapid Diagnostics Y2",
