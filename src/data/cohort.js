@@ -4,6 +4,8 @@ export const COHORT = [
     "Toyota Y3 Top up October 2021",
     "Toyota P6",
     "Performanta P7",
+    "Environmental Resources Management South Africa Programme 7",
+    "Spirax Sarco South Africa (Pty) Ltd P2",
     "Anglo American Platinum P3",
     "Mercedes Benz P4",
     "CSIR Program 3",
