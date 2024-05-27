@@ -1,7 +1,15 @@
-import { Flex, Spinner, Stack, Text, Input, Select, useToast } from "@chakra-ui/react";
+import {
+  Flex,
+  Spinner,
+  Stack,
+  Text,
+  Input,
+  Select,
+  useToast,
+} from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import { ProfileItem } from "../components";
-import UserService from '../services/UserService';
+import UserService from "../services/UserService";
 import ProfileItemModal from "../components/common/ProfileItemModal";
 import { COHORT } from "../data/cohort";
 
@@ -9,8 +17,8 @@ export default function AllYouthData() {
   const toast = useToast();
   const [profiles, setProfiles] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState('');
-  const [searchQuery, setSearchQuery] = useState('');
+  const [filter, setFilter] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
 
   const [isEditing, setIsEditing] = useState(false);
   const [selectedProfile, setSelectedProfile] = useState(undefined);
@@ -19,20 +27,21 @@ export default function AllYouthData() {
     try {
       let result = await UserService.getAll({ isValidated: true });
       let filteredProfiles = result.data || [];
-  
+
       // Apply additional filters for cohort and searchQuery
-      filteredProfiles = filteredProfiles.filter(profile => {
+      filteredProfiles = filteredProfiles.filter((profile) => {
         // Check if cohort matches if filter is applied
         if (filter && profile.cohort !== filter) {
           return false; // Skip this profile if cohort doesn't match the filter
         }
-  
+
         // Check if any of the fields contain the search query
         const searchTerms = searchQuery.toLowerCase().trim().split(" ");
-        return searchTerms.every(term =>
-          profile.cohort.toLowerCase().includes(term) ||
-          profile.first_name.toLowerCase().includes(term) ||
-          profile.last_name.toLowerCase().includes(term)
+        return searchTerms.every(
+          (term) =>
+            profile.cohort.toLowerCase().includes(term) ||
+            profile.first_name.toLowerCase().includes(term) ||
+            profile.last_name.toLowerCase().includes(term)
         );
       });
 
@@ -48,16 +57,20 @@ export default function AllYouthData() {
   const onSelectProfile = (profile) => {
     setIsEditing(true);
     setSelectedProfile(profile);
-  }
+  };
 
   const onStopEditing = () => {
     setIsEditing(false);
     setSelectedProfile(undefined);
-  }
+  };
 
-  const onUpdate = async (id, data) => {
-    try{
-      const updatedData = Object.assign({}, data, {isValidated: true});
+  const onUpdate = async (id, data, isValidated, isUpdated) => {
+    try {
+      let flags = {
+        isValidated,
+        isUpdated,
+      };
+      const updatedData = Object.assign({}, data, flags);
       await UserService.updateById(id, updatedData);
       setIsEditing(false);
       setLoading(true);
@@ -67,14 +80,14 @@ export default function AllYouthData() {
         status: "success",
         isClosable: true,
       });
-    } catch(error){
+    } catch (error) {
       toast({
         description: "Something went wrong!",
         status: "error",
         isClosable: true,
       });
     }
-  }
+  };
 
   useEffect(() => {
     loadData();
@@ -92,7 +105,9 @@ export default function AllYouthData() {
             <option value="">All Cohorts</option>
             {/* Render dropdown options dynamically from the cohort data */}
             {COHORT.map((cohort, index) => (
-              <option key={index} value={cohort}>{cohort}</option>
+              <option key={index} value={cohort}>
+                {cohort}
+              </option>
             ))}
           </Select>
           {/* Add input field for searching */}
@@ -111,7 +126,14 @@ export default function AllYouthData() {
       ) : Array.isArray(profiles) && profiles.length > 0 ? (
         <Stack>
           {profiles.map((item, i) => {
-            return <ProfileItem key={i} item={item} isValidated onSelectProfile={onSelectProfile} />;
+            return (
+              <ProfileItem
+                key={i}
+                item={item}
+                isValidated
+                onSelectProfile={onSelectProfile}
+              />
+            );
           })}
         </Stack>
       ) : (
@@ -120,14 +142,15 @@ export default function AllYouthData() {
         </Text>
       )}
 
-      {isEditing && <ProfileItemModal
-        data={selectedProfile}
-        isOpen={isEditing}
-        onClose={onStopEditing}
-        onSave={onUpdate}
-        isValidated={true}
-      />}
-
+      {isEditing && (
+        <ProfileItemModal
+          data={selectedProfile}
+          isOpen={isEditing}
+          onClose={onStopEditing}
+          onSave={onUpdate}
+          isValidated={true}
+        />
+      )}
     </Stack>
   );
 }

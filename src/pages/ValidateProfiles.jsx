@@ -1,7 +1,15 @@
-import { Flex, Spinner, Stack, Text, Input, Select, useToast } from "@chakra-ui/react";
+import {
+  Flex,
+  Spinner,
+  Stack,
+  Text,
+  Input,
+  Select,
+  useToast,
+} from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import { ProfileItem } from "../components";
-import UserService from '../services/UserService';
+import UserService from "../services/UserService";
 import ProfileItemModal from "../components/common/ProfileItemModal";
 
 // Import the cohorts array from cohort.js
@@ -11,8 +19,8 @@ export default function ValidateProfiles() {
   const toast = useToast();
   const [profiles, setProfiles] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState('');
-  const [searchQuery, setSearchQuery] = useState('');
+  const [filter, setFilter] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
 
   const [isEditing, setIsEditing] = useState(false);
   const [selectedProfile, setSelectedProfile] = useState(undefined);
@@ -24,7 +32,7 @@ export default function ValidateProfiles() {
       let filteredProfiles = result.data || [];
 
       // Apply additional filters for cohort and searchQuery
-      filteredProfiles = filteredProfiles.filter(profile => {
+      filteredProfiles = filteredProfiles.filter((profile) => {
         // Check if cohort matches if filter is applied
         if (filter && profile.cohort !== filter) {
           return false; // Skip this profile if cohort doesn't match the filter
@@ -32,10 +40,11 @@ export default function ValidateProfiles() {
 
         // Check if any of the fields contain the search query
         const searchTerms = searchQuery.toLowerCase().trim().split(" ");
-        return searchTerms.every(term =>
-          profile.cohort.toLowerCase().includes(term) ||
-          profile.first_name.toLowerCase().includes(term) ||
-          profile.last_name.toLowerCase().includes(term)
+        return searchTerms.every(
+          (term) =>
+            profile.cohort.toLowerCase().includes(term) ||
+            profile.first_name.toLowerCase().includes(term) ||
+            profile.last_name.toLowerCase().includes(term)
         );
       });
 
@@ -55,29 +64,41 @@ export default function ValidateProfiles() {
   const onSelectProfile = (profile) => {
     setIsEditing(true);
     setSelectedProfile(profile);
-  }
+  };
 
   const onStopEditing = () => {
     setIsEditing(false);
     setSelectedProfile(undefined);
-  }
+  };
 
-  const onUpdate = async (id, data, isValidated, isUpdated) => {
+  const onUpdate = async (id, data, isValidated, isUpdated, callType) => {
     try {
       let flags = {
         isValidated,
-        isUpdated
+        isUpdated,
       };
-      await UserService.updateById(id, Object.assign({}, data, flags));
-      setIsEditing(false);
-      setLoading(true);
-      loadData();
-      toast({
-        description: "Profile verified!",
-        status: "success",
-        isClosable: true,
-      });
-    } catch(error) {
+      if (callType === "update") {
+        await UserService.updateById(id, Object.assign({}, data, flags));
+        setIsEditing(false);
+        setLoading(true);
+        loadData();
+        toast({
+          description: "Updates saved!",
+          status: "success",
+          isClosable: true,
+        });
+      } else if (callType === "verify") {
+        await UserService.verifyById(id, Object.assign({}, data, flags));
+        setIsEditing(false);
+        setLoading(true);
+        loadData();
+        toast({
+          description: "Profile verified!",
+          status: "success",
+          isClosable: true,
+        });
+      }
+    } catch (error) {
       console.log(error);
       toast({
         description: "Something went wrong!",
@@ -85,7 +106,7 @@ export default function ValidateProfiles() {
         isClosable: true,
       });
     }
-  }
+  };
 
   useEffect(() => {
     loadData();
@@ -102,7 +123,9 @@ export default function ValidateProfiles() {
           <Select value={filter} onChange={(e) => setFilter(e.target.value)}>
             <option value="">All Cohorts</option>
             {COHORT.map((cohort, index) => (
-              <option key={index} value={cohort}>{cohort}</option>
+              <option key={index} value={cohort}>
+                {cohort}
+              </option>
             ))}
           </Select>
           <Input
@@ -120,7 +143,11 @@ export default function ValidateProfiles() {
       ) : profiles.length > 0 ? (
         <Stack>
           {profiles.map((item, i) => (
-            <ProfileItem key={i} item={item} onSelectProfile={onSelectProfile} />
+            <ProfileItem
+              key={i}
+              item={item}
+              onSelectProfile={onSelectProfile}
+            />
           ))}
         </Stack>
       ) : (
