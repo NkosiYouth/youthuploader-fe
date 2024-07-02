@@ -23,3 +23,27 @@ export const profileSchema = yup.object().shape({
   host: yup.string().required("Host required!"),
   host_address: yup.string().required("Host Address required!"),
 });
+
+export const noRequiredProfileSchema = yup.object().shape({
+  cohort: yup.string(),
+  title: yup.string(),
+  first_name: yup.string(),
+  last_name: yup.string(),
+  rsa_id_number: yup.string(),
+  mobile_number: yup.string(),
+  email: yup.string(),
+  gender: yup.string(),
+  disabled: yup.string(),
+  race: yup.string(),
+  residential_address: yup.string(),
+  tax_number: yup.string(),
+  bank_account_number: yup.string(),
+  bank_account_type: yup.string(),
+  bank_branch_code: yup.string(),
+  monthly_salary: yup.string(),
+  start_date: yup.string(),
+  end_date: yup.string(),
+  supervisor: yup.string(),
+  host: yup.string(),
+  host_address: yup.string(),
+});

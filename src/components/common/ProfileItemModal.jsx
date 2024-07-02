@@ -16,7 +16,7 @@ import { useEffect, useState } from "react";
 import PreviewPDF from "./PreviewPDF";
 import { useFormik } from "formik";
 import { CInput, CSelect } from "./inputs";
-import { profileSchema } from "../../utils/schema";
+import { noRequiredProfileSchema, profileSchema } from "../../utils/schema";
 import { cohort_options } from "../../data/cohort";
 import { supervisor_name_options } from "../../data/supervisor";
 import { host_site_options } from "../../data/host_site";
@@ -113,6 +113,9 @@ export default function ProfileItemModal({
           onSave && onSave(data._id, valuesToSave, false, true, "update");
           break;
         case "verify":
+          if (Object.values(valuesToSave).some(value => value === "")) {
+            throw new Error("Please fill in all required fields.");
+          }
           onSave && onSave(data._id, valuesToSave, true, true, "verify");
           break;
         default:
@@ -121,48 +124,33 @@ export default function ProfileItemModal({
     } catch (error) {
       toast({
         title: "Validation Error",
-        description: error.errors.join("\n"),
+        description: error.message,
         status: "error",
         duration: 5000,
+        position: 'top-right',
         isClosable: true,
       });
     } finally {
       setIsSubmitting(false);
     }
-    // try {
-    //   // Convert "Yes" or "No" to true or false for MongoDB
-    //   const valuesToUpdate = {
-    //     ...values,
-    //     disabled: values.disabled === "Yes" ? true : false,
-    //   };
-    //   console.log(valuesToUpdate);
-    //   const { _id, files, ...valuesToSave } = valuesToUpdate;
-    //   //Check if the data is validated
-    //   let dataIsValidated = isValidated;
-    //   let isUpdatedAndVerified = false;
-    //   if (isValidated) {
-    //   }
-    //   onSave &&
-    //     onSave(data._id, valuesToSave, dataIsValidated, isUpdatedAndVerified);
-    // } catch (error) {
-    //   toast({
-    //     title: "Validation Error",
-    //     description: error.errors.join("\n"),
-    //     status: "error",
-    //     duration: 5000,
-    //     isClosable: true,
-    //   });
-    // } finally {
-    //   setIsSubmitting(false);
-    // }
   };
+
+  const getData = () => {
+    if(data.disabled === "False"){
+      data.disabled = "No";
+    }
+    else{
+      data.disabled = "Yes";
+    }
+    return data;
+  }
 
   const formik = useFormik({
     initialValues: {
       ...Object.fromEntries(schemaKeys.map((key) => [key, ""])),
-      ...data, // Overwrite with passed data
+      ...getData()
     },
-    validationSchema: profileSchema,
+    validationSchema: noRequiredProfileSchema,
     onSubmit: onHandleSubmit,
   });
 
