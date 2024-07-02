@@ -57,7 +57,7 @@ const schemaKeys = [
 ];
 
 const dropdownOptions = {
-  title: ["Mr", "Ms", "Mrs", "Miss", "Dr"],
+  title: ["Mr", "Ms.", "Mrs.", "Miss", "Dr"],
   gender: ["Male", "Female", "Other"],
   disabled: ["Yes", "No"],
   race: ["Asian", "African", "Indian", "White", "Coloured", "Other"],
@@ -170,7 +170,6 @@ export default function ProfileItemModal({
     try {
       let data = await SupervisorService.getAll();
       data = data.data;
-      console.log("㊙️ DATA:", data);
       let options = data.map((item) => ({
         label: `${item.first_name} ${item.last_name}`,
         value: item._id,
@@ -185,7 +184,6 @@ export default function ProfileItemModal({
     try {
       let data = await HostService.getAll();
       data = data.data;
-      console.log("㊙️ DATA:", data);
       let options = data.map((item) => ({
         label: item.host_name,
         value: item._id,
@@ -200,7 +198,6 @@ export default function ProfileItemModal({
     try {
       let data = await HostAddressService.getAll();
       data = data.data;
-      console.log("㊙️ DATA:", data);
       let options = data.map((item) => ({
         label: item.host_address,
         value: item._id,
@@ -218,6 +215,7 @@ export default function ProfileItemModal({
     fetchHostAddresses();
   }, []);
 
+  console.log('㊙️ EROROR:', formik.values);
   return (
     <Modal
       isOpen={isOpen}

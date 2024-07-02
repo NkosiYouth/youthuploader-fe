@@ -15,6 +15,6 @@ export default class UserService {
   }
 
   static verifyById(id, data) {
-    return axios.put(`verify/${id}`, data);
+    return axios.put(`users/verify/${id}`, data);
   }
 }
