@@ -113,7 +113,7 @@ export default function ProfileItemModal({
           onSave && onSave(data._id, valuesToSave, false, true, "update");
           break;
         case "verify":
-          if (Object.values(valuesToSave).some(value => value === "")) {
+          if (Object.keys(valuesToSave).some(key => key !== 'host_site' && valuesToSave[key] === "")) {
             throw new Error("Please fill in all required fields.");
           }
           onSave && onSave(data._id, valuesToSave, true, true, "verify");
