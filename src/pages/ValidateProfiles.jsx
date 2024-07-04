@@ -109,21 +109,24 @@ export default function ValidateProfiles() {
           />
         </Flex>
       </Flex>
-      {loading ? (
-        <Flex justifyContent="center">
-          <Spinner />
-        </Flex>
-      ) : profiles.length > 0 ? (
-        <Stack>
-          {profiles.map((item, i) => (
-            <ProfileItem key={i} item={item} onSelectProfile={onSelectProfile} />
-          ))}
-        </Stack>
-      ) : (
-        <Text textAlign="center" color="gray">
-          No Profiles
-        </Text>
-      )}
+      <Stack spacing={4}>
+    <Text fontSize="md" color="gray">
+      {`Showing ${profiles.length} Unvalidated Profiles`}
+    </Text>
+    {loading ? (
+      <Flex justifyContent="center">
+        <Spinner />
+      </Flex>
+    ) : profiles.length > 0 ? (
+      profiles.map((item, i) => (
+        <ProfileItem key={i} item={item} onSelectProfile={onSelectProfile} />
+      ))
+    ) : (
+      <Text textAlign="center" color="gray">
+        No Profiles
+      </Text>
+    )}
+  </Stack>
 
       {isEditing && (
         <ProfileItemModal
