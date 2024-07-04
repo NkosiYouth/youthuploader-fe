@@ -19,7 +19,7 @@ export const profileSchema = yup.object().shape({
   monthly_salary: yup.string().required('Monthly salary required!'),
   start_date: yup.string().required('Start date required!'),
   end_date: yup.string().required('End date required!'),
-  supervisor_name: yup.string().required('Supervisor name required!'),
+  supervisor: yup.string().required('Supervisor name required!'),
   host_name: yup.string().required('Host name required!'),
   host_site: yup.string().required('Host site required!'),
 });

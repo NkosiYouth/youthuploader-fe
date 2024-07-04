@@ -43,7 +43,7 @@ const schemaKeys = [
   "monthly_salary",
   "start_date",
   "end_date",
-  "supervisor_name",
+  "supervisor",
   "host_name",
   "host_site",
   // "isValidated"
