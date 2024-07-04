@@ -50,7 +50,7 @@ const schemaKeys = [
 ];
 
 const dropdownOptions = {
-  title: ["Mr", "Ms", "Mrs", "Miss", "Dr"],
+  title: ["Mr", "Ms.", "Mrs.", "Miss", "Dr"],
   gender: ["Male", "Female", "Other"],
   disabled: ["Yes", "No"],
   race: ["Asian", "African", "Indian", "White", "Coloured", "Other"],
@@ -93,10 +93,20 @@ export default function ProfileItemModal({
     }
   };
 
+  const getData = () => {
+    if(data.disabled === "False" || data.disabled === false){
+      data.disabled = "No";
+    }
+    else{
+      data.disabled = "Yes";
+    }
+    return data;
+  }
+
   const formik = useFormik({
     initialValues: {
       ...Object.fromEntries(schemaKeys.map(key => [key, ""])),
-      ...data // Overwrite with passed data
+      ...getData()
     },
     validationSchema: profileSchema,
     onSubmit: onHandleSubmit,
