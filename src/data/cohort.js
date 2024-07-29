@@ -5,6 +5,7 @@ export const COHORT = [
     "Toyota P6",
     "Performanta P7",
     "Ramtsilo Hollard - 12",
+    "Lumkani Call Centre Hollard Insurance Company Pty Ltd",
     "CTA Hollard Insurance Company Pty Ltd P2",
     "C3 Hollard Insurance Company Pty Ltd P2",
     "Environmental Resources Management South Africa Programme 7",
