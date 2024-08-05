@@ -11,7 +11,7 @@ export const COHORT = [
     "Sage20240731",
     "Phillips - 2024",
     "MLC Quantity Surveyors SA (Pty) Ltd P7",
-    "Hollard Insurance Company Pty Ltd  P2 - C3 Academy 10",
+    "Hollard Insurance Company Pty Ltd P2 - C3 Academy 10",
     "CTA Hollard Insurance Company Pty Ltd P2",
     "C3 Hollard Insurance Company Pty Ltd P2",
     "Environmental Resources Management South Africa Programme 7",
