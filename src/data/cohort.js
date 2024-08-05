@@ -6,7 +6,7 @@ export const COHORT = [
     "Performanta P7",
     "Ramtsilo Hollard - 12",
     "Lumkani Call Centre Hollard Insurance Company Pty Ltd",
-    "Hollard CTA 10",
+    "Hollard CTA 10 (August)",
     "Hollard Insurance Company Pty Ltd  P2 - CTA 20",
     "Sage20240731",
     "Phillips - 2024",
